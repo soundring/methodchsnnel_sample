@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'pigeon.dart';
 
 void main() {
   runApp(MyApp());
@@ -40,10 +41,11 @@ class _MyHomePageState extends State<MyHomePage> {
       String deviceInfoText;
 
       try {
-        // 第一引数に呼び出したいメソッド名の文字列を指定。
-        // 第二引数には呼び出しメソッドの引数に指定するデータを指定。
-        // 型はプリミティブ型で使える型に制約あり。(https://api.flutter.dev/flutter/services/StandardMessageCodec-class.html)
-        deviceInfoText = await _channel.invokeMethod('fetchDeviceInfo', 'ムラサメ');
+        final api = DeviceInfoApi();
+        final request = DeviceInfoRequest()..text = 'ムラサメ';
+
+        DeviceInfoReply reply = await api.fetchDeviceInfo(request);
+        deviceInfoText = reply.deviceInfoText;
       } on PlatformException catch (e) {
         deviceInfoText = "デバイス情報が取得できませんでした: '${e.message}'.";
       }
